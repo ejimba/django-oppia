@@ -1,0 +1,46 @@
+version: '3.1'
+services:
+  oppia-app:
+    build:
+      context: ./
+    container_name: oppia-app
+    depends_on:
+      - oppia-mariadb
+    environment:
+      SECRET_KEY: "NEW_SECRET_KEY"
+      NAME: "oppia"
+      USER: "oppia"
+      PASSWORD: "oppia"
+      HOST: "oppia-mariadb"
+      PORT: "3306"
+      ALLOWED_HOSTS: "DOMAIN_NAME"
+      BASESITE_URL: "YOUR_MAIN_URL"
+      DEBUG: True
+    networks:
+      - oppia
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    volumes:
+      - ./.data/media:/app/media
+      - ./.data/static:/app/static
+      - ./.data/upload:/app/upload
+
+  oppia-mariadb:
+    container_name: oppia-mariadb
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_DATABASE: "oppia"
+      MYSQL_USER: "oppia"
+      MYSQL_PASSWORD: "oppia"
+    image: mariadb:10
+    networks:
+      - oppia
+    restart: unless-stopped
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+
+networks:
+  oppia:
+    driver: bridge
+    name: oppia
