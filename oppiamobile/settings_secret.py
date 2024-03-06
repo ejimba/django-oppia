@@ -31,3 +31,4 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'password')
 SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'admin@email.org')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'admin@email.org')
 EMAIL_TIMEOUT = os.getenv('EMAIL_TIMEOUT', 5)
+CSRF_TRUSTED_ORIGINS = [ os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost')]
