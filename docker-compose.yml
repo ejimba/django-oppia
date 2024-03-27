@@ -6,25 +6,16 @@ services:
     container_name: oppia-app
     depends_on:
       - oppia-mariadb
-    environment:
-      SECRET_KEY: "NEW_SECRET_KEY"
-      NAME: "oppia"
-      USER: "oppia"
-      PASSWORD: "oppia"
-      HOST: "oppia-mariadb"
-      PORT: "3306"
-      ALLOWED_HOSTS: "DOMAIN_NAME"
-      BASESITE_URL: "YOUR_MAIN_URL"
-      DEBUG: True
     networks:
       - oppia
     ports:
-      - 8000:8000
+      - 8000:80
     restart: unless-stopped
     volumes:
-      - ./.data/media:/app/media
-      - ./.data/static:/app/static
-      - ./.data/upload:/app/upload
+      - ./.data/config/settings_secret.py:/home/oppia/django-oppia/oppiamobile/settings_secret.py
+      - ./.data/media:/home/oppia/media
+      - ./.data/static:/home/oppia/static
+      - ./.data/upload:/home/oppia/upload
 
   oppia-mariadb:
     container_name: oppia-mariadb
