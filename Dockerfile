@@ -1,5 +1,5 @@
 FROM ghcr.io/astral-sh/uv:0.2.12 as uv
-FROM python:3.8.19-slim-bullseye
+FROM python:3.10-slim-bullseye
 
 RUN --mount=from=uv,source=/uv,target=./uv \
     ./uv venv /opt/venv
