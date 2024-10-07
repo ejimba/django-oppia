@@ -1,42 +1,37 @@
-
+version: '3.1'
 services:
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "${DJANGO_PORT:-8000}:8000"
-    volumes:
-      - .:/code
-      - ../static:/static
-      - ../media:/media
-      - ../upload:/upload
+  oppia-app:
+    build:
+      context: ./
+    container_name: oppia-app
     depends_on:
-      db:
-        condition: service_healthy
-  db:
-    image: mysql:8.0
+      - oppia-mariadb
+    networks:
+      - oppia
     ports:
-      - "${DB_PORT:-3306}:${DB_PORT:-3306}"
+      - 8000:80
+    restart: unless-stopped
     volumes:
-      - data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-      MYSQL_DATABASE: oppia
-      MYSQL_USER: oppiauser
-      MYSQL_PASSWORD_FILE: /run/secrets/db_password
-    secrets:
-      - db_root_password
-      - db_password
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 10s
-      timeout: 3s
-      retries: 3
+      - ./.data/config/settings_secret.py:/home/oppia/django-oppia/oppiamobile/settings_secret.py
+      - ./.data/media:/home/oppia/media
+      - ./.data/static:/home/oppia/static
+      - ./.data/upload:/home/oppia/upload
 
-secrets:
-  db_password:
-    file: ./db_password.txt
-  db_root_password:
-    file: ./db_root_password.txt
-volumes:
-  data:
+  oppia-mariadb:
+    container_name: oppia-mariadb
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_DATABASE: "oppia"
+      MYSQL_USER: "oppia"
+      MYSQL_PASSWORD: "oppia"
+    image: mariadb:10
+    networks:
+      - oppia
+    restart: unless-stopped
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+
+networks:
+  oppia:
+    driver: bridge
+    name: oppia
