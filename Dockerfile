@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt-get update && apt-get install -y \
     python3-mysqldb python3-dev libpython3-dev \
@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libmysqlclient-dev \
     pkg-config \
     && apt-get clean \
-    && apt-get autoremove \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
